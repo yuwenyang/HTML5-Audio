@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Wavesurfer Test Page</title>
+  <style type="text/css">
+    #controls { user-select: none; }
+    #pieces { column-count: 2; }
+    #curpiece .piece { display: inline; font-size: 1.8em; }
+  </style>
+</head>
+
+<body>
+  <div id="waveform"></div>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.3.7/wavesurfer.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.3.7/plugin/wavesurfer.regions.min.js"></script>
+  <script>
+    var minPxPerSec = 50;
+    var wavesurfer = WaveSurfer.create({
+      autoCenter: false, 
+      backend: 'MediaElement', // use instead of Web Audio so rate setting preserves pitch
+      container: '#waveform',
+      normalize: 'true',
+      height: 256,
+      minPxPerSec: minPxPerSec,
+      waveColor: 'violet',
+      progressColor: 'purple'
+    });
+    wavesurfer.load('music/TLI 圖畫故事 D-1.mp3');
+    wavesurfer.on('ready', function () {
+      // Enable creating regions by dragging
+      wavesurfer.enableDragSelection({});
+      
+      // Add a couple of pre-defined regions
+      wavesurfer.addRegion({
+	start: 2, // time in seconds
+	end: 5, // time in seconds
+	color: 'hsla(100, 100%, 30%, 0.1)'
+      });
+      
+      wavesurfer.addRegion({
+	start: 8,
+	end: 14,
+	color: 'hsla(200, 100%, 30%, 0.1)'
+      });
+      
+      wavesurfer.addRegion({
+	start: 28,
+	end: 36,
+	color: 'hsla(400, 100%, 30%, 0.1)'
+      });
+    });
+
+    var segments = [[0,3.69], [4.20,6.2], [6.36,7.36]];
+    wavesurfer.on('audioprocess', function () {
+      //console.log('proc', Math.round(wavesurfer.getCurrentTime() * 100) / 100);
+    });
+    // detect if shift key is pressed from within wavesurfer event
+    var shiftHeld = false;
+    document.getElementById('waveform').onmousedown = function (e) { shiftHeld = e.shiftKey };
+    var beg=0, end;
+    wavesurfer.on('seek', function () {
+      if (shiftHeld) {
+	end = Math.round(wavesurfer.getCurrentTime() * 100) / 100;
+	wavesurfer.play(beg,end);
+        console.log('play(' + beg + ',' + end + ')');
+      } else {
+	beg = Math.round(wavesurfer.getCurrentTime() * 100) / 100;
+      }
+      console.log(shiftHeld ? 'end' : 'beg', Math.round(wavesurfer.getCurrentTime() * 100) / 100);
+    });
+  </script>
+  <button onclick="wavesurfer.playPause()">Play/Pause</button>
+  Zoom:
+  <button onclick="minPxPerSec -= 50; wavesurfer.zoom(minPxPerSec)">-</button>
+  <button onclick="minPxPerSec += 50; wavesurfer.zoom(minPxPerSec)">+</button>
+  <button onclick="minPxPerSec  = 5; wavesurfer.zoom(minPxPerSec)">5</button>
+  <button onclick="minPxPerSec  = 10; wavesurfer.zoom(minPxPerSec)">10</button>
+  <button onclick="minPxPerSec  = 20; wavesurfer.zoom(minPxPerSec)">20</button>
+  <button onclick="minPxPerSec  = 30; wavesurfer.zoom(minPxPerSec)">30</button>
+  <button onclick="minPxPerSec  = 40; wavesurfer.zoom(minPxPerSec)">40</button>
+  <button onclick="minPxPerSec  = 50; wavesurfer.zoom(minPxPerSec)">50</button>
+  <button onclick="minPxPerSec  = 100; wavesurfer.zoom(minPxPerSec)">100</button>
+  <button onclick="minPxPerSec  = 150; wavesurfer.zoom(minPxPerSec)">150</button>
+  <button onclick="minPxPerSec  = 200; wavesurfer.zoom(minPxPerSec)">200</button>
+  <button onclick="minPxPerSec  = 500; wavesurfer.zoom(minPxPerSec)">500</button>
+  <button onclick="minPxPerSec  = 1000; wavesurfer.zoom(minPxPerSec)">1000</button>
+  Rate:
+  <button onclick="wavesurfer.setPlaybackRate(0.5)">0.5</button>
+  <button onclick="wavesurfer.setPlaybackRate(0.75)">0.75</button>
+  <button onclick="wavesurfer.setPlaybackRate(1)">1</button>
+  <button onclick="wavesurfer.setPlaybackRate(1.5)">1.5</button>
+  <button onclick="wavesurfer.setPlaybackRate(2)">2</button>
+  <button onclick="wavesurfer.setPlaybackRate(4)">4</button>
+  <br>
+  <button onclick="wavesurfer.play(0.10,0.45)">我有</button>
+  <button onclick="wavesurfer.play(0.57,1.00)">一位</button>
+  <button onclick="wavesurfer.play(1.06,1.64)">朋友</button>
+  <button onclick="wavesurfer.play(1.69,2.00)">是</button>
+  <button onclick="wavesurfer.play(2.07,2.80)">馬來西亞</button>
+  <button onclick="wavesurfer.play(2.90,3.69)">華僑。</button>
+  <br>
+  <button onclick="wavesurfer.play(0.10,1.64)">我有一位朋友</button>
+  <button onclick="wavesurfer.play(1.69,3.69)">是馬來西亞華僑。</button>
+  <button onclick="wavesurfer.play(4.20,6.24)">他想利用教師節、</button>
+  <button onclick="wavesurfer.play(6.36,7.36)">中秋節</button>
+  <button onclick="wavesurfer.play(7.44,8.73)">和雙十節</button>
+  <button onclick="wavesurfer.play(8.74,9.75)">這段假期，</button>
+  <button onclick="wavesurfer.play(10.13,11.43)">到台灣來</button>
+  <button onclick="wavesurfer.play(11.41,12.59)">環島旅行。</button>
+  <button onclick="wavesurfer.play(13.22,14.98)">我也請了幾天假，</button>
+  <button onclick="wavesurfer.play(15.24,16.48)">陪他一起去。</button>
+  <br>
+  <button onclick="wavesurfer.play(0.10,3.69)">我有一位朋友是馬來西亞華僑。</button>
+  <button onclick="wavesurfer.play(4.20,7.36)">他想利用教師節、中秋節</button>
+  <button onclick="wavesurfer.play(7.44,9.75)">和雙十節這段假期，</button>
+  <button onclick="wavesurfer.play(10.13,12.59)">到台灣來環島旅行。</button>
+  <button onclick="wavesurfer.play(13.22,16.48)">我也請了幾天假，陪他一起去。</button>
+  <button onclick="wavesurfer.play(,)"></button>
+  <pre>TODO:
+    specify preferred segment size?
+    optionally break at sentence, punctuation
+    compose scripts, e.g.:
+    loop, for each segment, exportable as practice mp3:
+      segment (half-rate), pause=segment duration for learner to repeat,
+      repeat segment (normal rate), pause again
+    auto-detect silences for rough segmentation
+    display tones above characters (also pinyin, bopomofo, translation)
+  </pre>
+</body>
+</html>

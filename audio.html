@@ -2,20 +2,27 @@
 <html>
 
 <head>
-	<meta charset="utf-8">
-	<title>HTML5 Audio</title>
-	<link rel="stylesheet" type="text/css" href="css/reset.css">
-	<link rel="stylesheet" type="text/css" href="css/audio.css">
+  <meta charset="utf-8">
+  <title>Kai HTML5 Audio Test Page</title>
+  <link rel="stylesheet" type="text/css" href="css/reset.css">
+  <link rel="stylesheet" type="text/css" href="css/audio.css">
+  <style type="text/css">
+    #controls { user-select: none; }
+    #pieces { column-count: 2; }
+    #curpiece .piece { display: inline; font-size: 1.8em; }
+    .playing { background-color: yellow; }
+  </style>
 </head>
 
 <body>
 	<!--HTML5 audio-->
 	<audio id="music" preload="true">
-		<source src="music/interlude.mp3">
-		<source src="music/interlude.ogg">
+		<source src="music/wtc-audacity.mp3">
+		<source src="music/wtc-audacity.ogg">
 	</audio>
 
 	<div id="wrapper">
+	  
 		<!--Audio Player Interface-->
 		<div id="audioplayer">
 			<button id="pButton" class="play"></button>
@@ -24,6 +31,39 @@
 			</div>
 		</div>
 	</div>
+	<div id="controls">
+	  <span id="back30" title="back 30 seconds">&lt;&lt;</span>
+	  <span id="back05" title="back 5 seconds">&lt;</span>
+	  <span id="fore05" title="forwards 5 seconds">&gt;</span>
+	  <span id="fore30" title="forwards 30 seconds">&gt;&gt;</span>
+	  <span id="rate05" title="half speed">0.5</span>
+	  <span id="rate075" title="3/4 speed">0.75</span>
+	  <span id="rate1" title="normal rate">1</span>
+	  <span id="rate2" title="double speed">2</span>
+	  <span id="rate4" title="quadruple speed">4</span>
+	  <input id="pbrate" type="range" value="1" min="0.5" max="4" step="0.1" >
+	  <span>Playback Rate: <span id="curpbrate">1</span></span>
+	  Current piece:<br><span id="curpiece">...</span>
+	</div>
+	<div id="label">time</div>
+	<div id="pieces">pieces</div>
+
+	<p>&nbsp;</p>
+	<p id="footer">
+	  <a href="http://www.bachwelltemperedclavier.org/comments-to-book-i.html">P. Goeth's analysis of Book I, includes comparison of different interpreters</a> (incomplete)<br>
+	  <a href="http://www2.nau.edu/tas3/wtc/wtc.html">analysis and performance of each fugue (Flash)</a> / 
+	  <a href="http://oregonbachfestival.com/digitalbach/clavier/">played on original scores (Flash)</a> (both sites still work for me on Firefox...)<br>
+	  <a href="https://de.wikipedia.org/wiki/Das_Wohltemperierte_Klavier">German Wikipedia</a><br>
+	  <a href="http://www.hermann-keller.org/content/buecherundlehrwerke/buecher.html">Hermann Keller's description of each prelude and fugue</a><br>
+	  <a href="http://www.pianomajeur.net/index.php?option=com_content&task=view&id=27&Itemid=49">Harry Halbreich: notices analytiques</a><br>	  
+	  <a href="http://www-personal.umich.edu/~siglind/text.htm">S. Bruhn's rather technical in-depth analysis</a><br>
+	  <a href="https://archive.org/details/fortyeightprelud002010mbp">Cecil Gray's The Forty Eight Preludes And Fugues Of J S Bach (1938)</a><br>
+	  <a href="https://archive.org/details/analysisofjsbach00prouuoft">Ebenezer Prout's Analysis of J. S. Bach's 48 Fugues</a> and <a href="https://everything2.com/title/Prout%2527s+words+for+the+Fugue+Subjects+of+Bach%2527s+Well-Tempered+Clavier">mnemonics (?)</a> /
+	  <a href="http://www.amazon.com/Bachs-Well-tempered-Clavier-Preludes-Fugues/dp/0300097077/">David Ledbetter</a><br>
+	  <a href="https://www.youtube.com/watch?v=sFY9mj6m548">WTC, Book I - Evelyne Crochet</a>
+	  <a href="http://www.bachwelltemperedclavier.org/literature-and-online-ressources.html">and more</a><br>
+	</p>
+
 
 	<script src="js/html5audio.js" type="text/javascript"></script>
 

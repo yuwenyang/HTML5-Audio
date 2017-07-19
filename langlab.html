@@ -1,4 +1,69 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Language Lab</title>
+
+  <link rel="stylesheet" type="text/css" href="css/audio.css">  
+  <style type="text/css">
+    #controls { user-select: none; }
+    #pieces { column-count: 2; }
+    #curpiece .piece { display: inline; font-size: 1.8em; }
+    .playing { background-color: yellow; }
+    .text { font-size: 1.3em; }
+  </style>
+</head>
+
+<body>
+  <p>¯ ´ ˘  ` ·  </p>
+  <div class="text">
+    <p>０、我有一位朋友是馬來西亞華僑。他想利用教師節、中秋節和雙十節這段假期，到台灣來環島旅行。我也請了幾天假，陪他一起去。
+    <p>１、因為很多華僑回來過雙十節，所以這段時間的機票相當難買，他雖然一個月以前就跟航空公司訂了位子，可是還是沒有空位。後來幸虧有人退票，公司才通知他補位，要不然他就來不了了。
+    <p>２、到了機場，因為時間還早，所以他就先找個地方坐坐。他正在喝咖啡的時候，忽然聽到廣播說，他坐的那班飛機要延後兩個鐘頭才能起飛。
+    <p>３、等了兩個鐘頭，終於可以上飛機了。上了飛機，他先找著座位，坐好以後，馬上就把安全帶扣好。現在要仔細聽空中小姐為旅客解釋安全設備的用法。
+    <p>４、不久，空中小姐送來了一份午餐和飲料。雖然剛才在機場吃了一盤炒麵，可是看見這麼豐富的午餐，他忍不住又拿刀、叉吃起來了。
+    <p>５、飛機終於平安地到中正機場了。 雖然比預定的時間遲了一個半鐘頭，可是我還是很耐心底在機場等著他。
+    <p>６、我開車送他到台北的圓山大飯店。他對這個傳統中國式的飯店非常滿意。
+  </div>
+
+	<!--HTML5 audio-->
+	<audio id="music" preload="true">
+		<source src="music/TLI 圖畫故事 D-1.mp3">
+		<source src="music/TLI 圖畫故事 D-1.ogg">
+	</audio>
+
+	<div id="wrapper">
+	  
+		<!--Audio Player Interface-->
+		<div id="audioplayer">
+			<button id="pButton" class="play"></button>
+			<div id="timeline">
+				<div id="playhead"></div>
+			</div>
+		</div>
+	</div>
+	<div id="controls">
+	  <span id="back30" title="back 30 seconds">&lt;&lt;</span>
+	  <span id="back05" title="back 5 seconds">&lt;</span>
+	  <span id="fore05" title="forwards 5 seconds">&gt;</span>
+	  <span id="fore30" title="forwards 30 seconds">&gt;&gt;</span>
+	  <span id="rate05" title="half speed">0.5</span>
+	  <span id="rate075" title="3/4 speed">0.75</span>
+	  <span id="rate1" title="normal rate">1</span>
+	  <span id="rate2" title="double speed">2</span>
+	  <span id="rate4" title="quadruple speed">4</span>
+	  <input id="pbrate" type="range" value="1" min="0.5" max="4" step="0.1" >
+	  <span>Playback Rate: <span id="curpbrate">1</span></span>
+	  Current piece:<br><span id="curpiece">...</span>
+	</div>
+	<div id="label">time</div>
+	<div id="pieces">pieces</div>
+
+	<p>&nbsp;</p>
+
+	<script type="text/javascript">
+	document.addEventListener("DOMContentLoaded", function(event) {
 
 var music = document.getElementById('music'); // id for audio element
 var duration; // Duration of audio clip
@@ -136,6 +201,7 @@ function timeUpdate() {
 
   String.prototype.seconds2Time = function () {
     var sec_num = parseInt(this, 10);
+    var digits  = Math.round((this - sec_num)*10);
     var hours   = Math.floor(sec_num / 3600);
     var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
     var seconds = sec_num - (hours * 3600) - (minutes * 60);
@@ -143,7 +209,7 @@ function timeUpdate() {
     if (hours   < 10) {hours   = "0"+hours;}
     if (minutes < 10) {minutes = "0"+minutes;}
     if (seconds < 10) {seconds = "0"+seconds;}
-    var time = hours+':'+minutes+':'+seconds;
+    var time = hours+':'+minutes+':'+seconds+'.'+digits;
     return time;
   }
   String.prototype.time2Seconds = function () {
@@ -191,7 +257,7 @@ function getPosition(el) {
   }
   
   piecesData = [
-    { book: 1, number:  1, bwv: 846, key: "C Maj.",  prelude: "00:00:00.5", fugue: "00:01:57.5" },
+    { book: 1, number:  1, bwv: 846, key: "C Maj.",  prelude: "00:00:00.1", fugue: "00:01:57.5" },
     { book: 1, number:  2, bwv: 847, key: "C min.",  prelude: "00:04:30.3", fugue: "00:05:48.3" },
     { book: 1, number:  3, bwv: 848, key: "C♯ Maj.", prelude: "00:07:30.6", fugue: "00:08:44.5" },
     { book: 1, number:  4, bwv: 849, key: "C♯ min.", prelude: "00:10:50.4", fugue: "00:14:03.7" },
@@ -203,43 +269,6 @@ function getPosition(el) {
     { book: 1, number: 10, bwv: 855, key: "E min.",  prelude: "00:45:48.3", fugue: "00:47:41.6" },
     { book: 1, number: 11, bwv: 856, key: "F Maj.",  prelude: "00:48:50.6", fugue: "00:49:45.3" },
     { book: 1, number: 12, bwv: 857, key: "F min.",  prelude: "00:51:04.8", fugue: "00:53:14.8" },
-    { book: 1, number: 13, bwv: 858, key: "F♯ Maj.", prelude: "00:58:39.3", fugue: "01:00:03.4" },
-    { book: 1, number: 14, bwv: 859, key: "F♯ min.", prelude: "01:02:20.9", fugue: "01:03:12.2" },
-    { book: 1, number: 15, bwv: 860, key: "G Maj.",  prelude: "01:07:30.3", fugue: "01:08:18.8" },
-    { book: 1, number: 16, bwv: 861, key: "G min.",  prelude: "01:10:41.8", fugue: "01:12:39.2" },
-    { book: 1, number: 17, bwv: 862, key: "A♭ Maj.", prelude: "01:15:31.7", fugue: "01:16:42.2" },
-    { book: 1, number: 18, bwv: 863, key: "G♯ min.", prelude: "01:19:37.3", fugue: "01:21:01.3" },
-    { book: 1, number: 19, bwv: 864, key: "A Maj.",  prelude: "01:24:26.2", fugue: "01:25:37.1" },
-    { book: 1, number: 20, bwv: 865, key: "A min.",  prelude: "01:28:14.0", fugue: "01:29:08.8" },
-    { book: 1, number: 21, bwv: 866, key: "B♭ Maj.", prelude: "01:33:16.9", fugue: "01:34:22.5" },
-    { book: 1, number: 22, bwv: 867, key: "B♭ min.", prelude: "01:35:52.1", fugue: "01:38:18.2" },
-    { book: 1, number: 23, bwv: 868, key: "B Maj.",  prelude: "01:42:37.5", fugue: "01:43:29.2" },
-    { book: 1, number: 24, bwv: 869, key: "B min.",  prelude: "01:46:02.3", fugue: "01:47:26.2" },
-
-    { book: 2, number:  1, bwv: 870, key: "C Maj.",  prelude: "02:01:21.7", fugue: "02:03:51.5" },
-    { book: 2, number:  2, bwv: 871, key: "C min.",  prelude: "02:05:22.9", fugue: "02:07:12.0" },
-    { book: 2, number:  3, bwv: 872, key: "C♯ Maj.", prelude: "02:09:50.7", fugue: "02:11:21.0" },
-    { book: 2, number:  4, bwv: 873, key: "C♯ min.", prelude: "02:13:09.4", fugue: "02:16:55.3" },
-    { book: 2, number:  5, bwv: 874, key: "D Maj.",  prelude: "02:18:53.1", fugue: "02:23:47.6" },
-    { book: 2, number:  6, bwv: 875, key: "D min.",  prelude: "02:27:16.0", fugue: "02:28:38.2" },
-    { book: 2, number:  7, bwv: 876, key: "E♭ Maj.", prelude: "02:30:17.9", fugue: "02:32:37.0" },
-    { book: 2, number:  8, bwv: 877, key: "E♭ min.", prelude: "02:34:55.2", fugue: "02:38:12.0" },
-    { book: 2, number:  9, bwv: 878, key: "E Maj.",  prelude: "02:42:38.2", fugue: "02:46:50.2" },
-    { book: 2, number: 10, bwv: 879, key: "E min.",  prelude: "02:51:19.6", fugue: "02:54:21.1" },
-    { book: 2, number: 11, bwv: 880, key: "F Maj.",  prelude: "02:57:03.7", fugue: "03:00:05.5" },
-    { book: 2, number: 12, bwv: 881, key: "F min.",  prelude: "03:01:41.4", fugue: "03:05:53.4" },
-    { book: 2, number: 13, bwv: 882, key: "F♯ Maj.", prelude: "03:07:46.8", fugue: "03:10:31.5" },
-    { book: 2, number: 14, bwv: 883, key: "F♯ min.", prelude: "03:13:02.8", fugue: "03:16:25.5" },
-    { book: 2, number: 15, bwv: 884, key: "G Maj.",  prelude: "03:22:31.3", fugue: "03:24:43.3" },
-    { book: 2, number: 16, bwv: 885, key: "G min.",  prelude: "03:25:53.4", fugue: "03:28:44.9" },
-    { book: 2, number: 17, bwv: 886, key: "A♭ Maj.", prelude: "03:32:13.1", fugue: "03:35:20.3" },
-    { book: 2, number: 18, bwv: 887, key: "G♯ min.", prelude: "03:38:54.4", fugue: "03:42:38.3" },
-    { book: 2, number: 19, bwv: 888, key: "A Maj.",  prelude: "03:49:23.9", fugue: "03:50:56.0" },
-    { book: 2, number: 20, bwv: 889, key: "A min.",  prelude: "03:52:04.2", fugue: "03:56:31.0" },
-    { book: 2, number: 21, bwv: 890, key: "B♭ Maj.", prelude: "03:58:02.0", fugue: "04:03:50.0" },
-    { book: 2, number: 22, bwv: 891, key: "B♭ min.", prelude: "04:07:40.7", fugue: "04:10:33.8" },
-    { book: 2, number: 23, bwv: 892, key: "B Maj.",  prelude: "04:18:14.8", fugue: "04:19:44.3" },
-    { book: 2, number: 24, bwv: 893, key: "B min.",  prelude: "04:24:51.3", fugue: "04:27:09.6" }
   ];
   function piecesHTML() {
     var html = '<div id="col1"><div>Book I</div>';
@@ -287,3 +316,9 @@ function getPosition(el) {
 
 /* DOMContentLoaded*/
 });
+	  
+	</script>
+
+</body>
+
+</html>
